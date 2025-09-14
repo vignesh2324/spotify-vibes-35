@@ -2,9 +2,10 @@ import { Home, Search, Library, Heart, Plus, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
-  { name: "Home", icon: Home, href: "/" },
+  { name: "Home", icon: Home, href: "/dashboard" },
   { name: "Search", icon: Search, href: "/search" },
   { name: "Your Library", icon: Library, href: "/library" },
 ];
@@ -18,6 +19,8 @@ const playlists = [
 ];
 
 export default function Sidebar() {
+  const location = useLocation();
+
   return (
     <div className="hidden md:flex flex-col w-64 bg-background-subtle border-r border-border/30">
       <div className="p-4 space-y-4">
@@ -26,10 +29,15 @@ export default function Sidebar() {
             <Button
               key={item.name}
               variant="ghost"
-              className="w-full justify-start hover:bg-secondary/50"
+              className={`w-full justify-start hover:bg-secondary/50 ${
+                location.pathname === item.href ? 'bg-secondary text-primary' : ''
+              }`}
+              asChild
             >
-              <item.icon className="mr-3 h-5 w-5" />
-              {item.name}
+              <Link to={item.href}>
+                <item.icon className="mr-3 h-5 w-5" />
+                {item.name}
+              </Link>
             </Button>
           ))}
         </nav>
@@ -49,18 +57,24 @@ export default function Sidebar() {
               <Button
                 variant="ghost"
                 className="w-full justify-start hover:bg-secondary/50 text-primary"
+                asChild
               >
-                <Heart className="mr-3 h-4 w-4" />
-                Liked Songs
+                <Link to="/playlist/liked">
+                  <Heart className="mr-3 h-4 w-4" />
+                  Liked Songs
+                </Link>
               </Button>
-              {playlists.slice(1).map((playlist) => (
+              {playlists.slice(1).map((playlist, index) => (
                 <Button
                   key={playlist}
                   variant="ghost"
                   className="w-full justify-start hover:bg-secondary/50 text-muted-foreground"
+                  asChild
                 >
-                  <Music className="mr-3 h-4 w-4" />
-                  {playlist}
+                  <Link to={`/playlist/${index + 2}`}>
+                    <Music className="mr-3 h-4 w-4" />
+                    {playlist}
+                  </Link>
                 </Button>
               ))}
             </div>
